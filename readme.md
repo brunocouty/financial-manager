@@ -1,4 +1,4 @@
-# About Financial Manager
+# About Financial Manager - ON DEV
 
 This is a module to manage yours finances of a simple way. You can add registers, create categories to registers, see your data processed in charts, filter the registers in a specific range and much more! 
 
@@ -38,7 +38,7 @@ And add the alias, on array "*aliases*":
 Add this line in your routes (in middleware 'auth'):
 
 ```php
-Route::group(['middleware' => 'auth', function () {
+Route::group(['middleware' => 'auth'], function () {
     FinancialManager::routes();
 });
 ```
