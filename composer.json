@@ -1,0 +1,25 @@
+{
+  "name": "brunocouty/financial-manager",
+  "description": "Laravel financial manager modulo to use in your application. You can use this package to commercial use, BUT IT IS OBLIGATORY TO CIT THE AUTHOR IN THE SOURCE CODE, SYSTEM DOCUMENTATION AND PUBLIC AREA OF THE PROJECT.",
+  "authors": [
+    {
+      "name": "Bruno Couty",
+      "email": "brunocouty@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "guzzlehttp/guzzle": "~6.0",
+    "php": ">=7.1",
+    "illuminate/contracts": "~5.1",
+    "illuminate/http": "~5.1",
+    "illuminate/support": "~5.1",
+    "illuminate/database": "~5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "BrunoCouty\\FinancialManager\\": "src/"
+    }
+  },
+  "license": "MIT"
+}
