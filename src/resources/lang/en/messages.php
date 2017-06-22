@@ -11,4 +11,6 @@ return [
     'cancel' => 'Cancel',
     'deletion-canceled' => 'Deletion canceled. Your records are saved!',
     'deletion-success' => 'Deleted successfully!',
+    'updated-success' => 'Updated successfully!',
+    'updated-error' => 'A error happened on update.',
 ];

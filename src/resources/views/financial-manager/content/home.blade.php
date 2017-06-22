@@ -7,19 +7,25 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@lang('FM-Language::labels.financial-manager')</title>
     @if(config('financial-manager.https'))
-        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/bootstrap.css') }}">
-        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/bootstrap-theme.css') }}">
-        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/font-awesome.css') }}">
-        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/bootstrap-datepicker.css') }}">
-        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/sweetalert2.css') }}">
-        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/personal.css') }}">
+        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/bootstrap.css') }}"/>
+        @if(config('financial-manager.theme') != 'default')
+            <link rel="stylesheet"
+                  href="{{ secure_asset('vendor/financial-manager/css/theme-'.config('financial-manager.theme').'.css') }}"/>
+        @endif
+        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/font-awesome.css') }}"/>
+        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/bootstrap-datepicker.css') }}"/>
+        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/sweetalert2.css') }}"/>
+        <link rel="stylesheet" href="{{ secure_asset('vendor/financial-manager/css/personal.css') }}"/>
     @else
-        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/bootstrap.css') }}">
-        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/bootstrap-theme.css') }}">
-        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/font-awesome.css') }}">
-        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/bootstrap-datepicker.css') }}">
-        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/sweetalert2.css') }}">
-        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/personal.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/bootstrap.css') }}"/>
+        @if(config('financial-manager.theme') != 'default')
+            <link rel="stylesheet"
+                  href="{{ asset('vendor/financial-manager/css/theme-'.config('financial-manager.theme').'.css') }}"/>
+        @endif
+        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/font-awesome.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/bootstrap-datepicker.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/sweetalert2.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('vendor/financial-manager/css/personal.css') }}"/>
     @endif
 </head>
 <body>
@@ -120,7 +126,7 @@
                     </label>
                     <input id="range-end" type="tel" class="form-control date">
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">
+                <button type="submit" class="btn btn-info btn-block">
                     <i class="fa fa-filter"></i>
                     @lang('FM-Language::labels.filter')
                 </button>
@@ -288,18 +294,44 @@
     <script src="{{ asset('vendor/financial-manager/js/sweetalert2.js') }}"></script>
 @endif
 <script>
-    $(function () {
+    var fixBootstrapModal = function () {
+        const modalNode = document.querySelector('.modal[tabindex="-1"]');
+        if (!modalNode) return;
 
+        modalNode.removeAttribute('tabindex');
+        modalNode.classList.add('js-swal-fixed');
+    };
+    var restoreBootstrapModal = function () {
+        const modalNode = document.querySelector('.modal.js-swal-fixed');
+        if (!modalNode) return;
+
+        modalNode.setAttribute('tabindex', '-1');
+        modalNode.classList.remove('js-swal-fixed');
+    };
+    /**
+     * Run on page load.
+     * */
+    $(function () {
+        fixBootstrapModal();
+        /**
+         * Initialize the datepicker plugin.
+         * */
         $('.date').datepicker({
             autoclose: true,
             todayHighlight: true,
             language: '{{App::getLocale()}}'
         });
 
+        /**
+         * On open modal to manage categories.
+         **/
         $('#addCategory').on('show.bs.modal', function (event) {
             loadCategories();
         });
 
+        /**
+         * On open modal to add register.
+         **/
         $('#addRegister').on('show.bs.modal', function (event) {
             $.ajax({
                 url: '{{route('financial-manager.category.load')}}',
@@ -357,11 +389,11 @@
                 $("#list-categories").html();
                 $.each(response.categories, function (key, value) {
                     lines += '<tr>';
-                    lines += '<td>';
+                    lines += '<td id="category_' + value.id + '">';
                     lines += value.name;
                     lines += '</td>';
                     lines += '<td class="text-right">';
-                    lines += '<button class="btn btn-info"><i class="fa fa-edit"></i></button> ';
+                    lines += '<button class="btn btn-info" onclick="editCategory(' + value.id + ')"><i class="fa fa-edit"></i></button> ';
                     lines += '<button class="btn btn-danger" onclick="deleteCategory(' + value.id + ')"><i class="fa fa-times"></i></button>';
                     lines += '</td>';
                     lines += '</tr>';
@@ -488,11 +520,72 @@
                 type: 'success',
                 title: 'Ok',
                 text: '@lang('FM-Language::messages.deletion-canceled')',
-                confirmButtonText: 'Ok'
+                confirmButtonText: 'Ok',
+                confirmButtonClass: 'btn btn-info',
+                buttonsStyling: false
             });
         });
     }
 
+    /**
+     * Edit a category name.
+     * @param id
+     */
+    function editCategory(id) {
+        var category = $('#category_' + id).html();
+        fixBootstrapModal();
+        swal({
+            html: '' +
+            '<div class="form-group">' +
+            '<input class="form-control" value="' + category + '" id="category_edit" />' +
+            '</div>',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fa fa-save"></i> @lang('FM-Language::labels.save')',
+            cancelButtonText: '<i class="fa fa-times"></i> @lang('FM-Language::labels.cancel')',
+            showLoaderOnConfirm: true,
+            confirmButtonClass: 'btn btn-success margin-10',
+            cancelButtonClass: 'btn btn-default margin-10',
+            buttonsStyling: false
+        }).then(function () {
+            var data = {
+                _token: '{{csrf_token()}}',
+                category: id,
+                name: $("#category_edit").val()
+            };
+            $.ajax({
+                url: '{{route('financial-manager.category.update')}}',
+                data: data,
+                type: 'put',
+                beforeSend: function () {
+
+                },
+                error: function () {
+                    swal({
+                        type: 'error',
+                        title: 'Ok',
+                        text: '@lang('FM-Language::messages.updated-error')',
+                        confirmButtonText: 'Ok',
+                        confirmButtonClass: 'btn btn-info',
+                        buttonsStyling: false
+                    });
+                },
+                success: function () {
+                    swal({
+                        type: 'success',
+                        title: 'Ok',
+                        text: '@lang('FM-Language::messages.updated-success')',
+                        confirmButtonText: 'Ok',
+                        confirmButtonClass: 'btn btn-info',
+                        buttonsStyling: false
+                    });
+                    loadCategories();
+                }
+            });
+            restoreBootstrapModal();
+        }).catch(function () {
+            restoreBootstrapModal();
+        });
+    }
 </script>
 </body>
 </html>

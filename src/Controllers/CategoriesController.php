@@ -63,11 +63,33 @@ class CategoriesController extends Controller
     public function delete(Request $request)
     {
         $category_id = $request->get('category');
+        $user = Auth::user();
         try {
-            $category = FinancialCategory::findOrFail($category_id);
+            $category = FinancialCategory::where('id', $category_id)->where('user_id', $user->id)->first();
             $category->delete();
         } catch (\Exception $e) {
             return response([], 422);
+        }
+        return response([], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        $category_id = $request->get('category');
+        try {
+            $category = FinancialCategory::where('id', $category_id)->where('user_id', $user->id)->first();
+            $category->update([
+                'name' => $request->get('name')
+            ]);
+        } catch (\Exception $e) {
+            return response([
+                'message' => $e->getMessage()
+            ], 422);
         }
         return response([], 200);
     }

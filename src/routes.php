@@ -19,5 +19,9 @@ Route::group(['prefix' => 'financial', 'middleware' => 'auth', 'as' => 'financia
                 'as' => 'delete',
                 'uses' => '\BrunoCouty\FinancialManager\Controllers\CategoriesController@delete'
             ]);
+            Route::put('', [
+                'as' => 'update',
+                'uses' => '\BrunoCouty\FinancialManager\Controllers\CategoriesController@update'
+            ]);
         });
     });
