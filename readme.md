@@ -43,6 +43,37 @@ Route::group(['middleware' => 'auth'], function () { // REQUIRED!
 });
 ```
 
+Run the migrations required:
+
+```
+php artisan migrate
+```
+
+## Configuration
+
+You can custom the views and resources of this module. Publish the files:
+
+```
+php artisan vendor:publish
+```
+
+The files that will be published:
+
+```
+Copied Directory [/modules/brunocouty/financial-manager/src/resources/assets] To [/public/vendor/financial-manager]
+Copied File [/modules/brunocouty/financial-manager/src/config/financial-manager.php] To [/config/financial-manager.php]
+Copied Directory [/modules/brunocouty/financial-manager/src/resources/views] To [/resources/views]
+Publishing complete.
+```
+
+There're important informations on configuration file "*/config/financial-manager.php*" to you set:
+
+```
+'google-key' => env('GOOGLE_KEY', ''), // Google API key - used for generate google charts
+'https' => env('HTTPS_PROTOCOL', false), // Define if the protocol is "https" 
+'theme' => 'default' // default, bootstrap, superhero, lumen, slate, amelia
+```
+
 ***IMPORTANT NOTE:*** This module uses the user's info to work, so use the middleware 'auth' is required.
 
 ## What "vendors" this module use?
@@ -51,6 +82,7 @@ Route::group(['middleware' => 'auth'], function () { // REQUIRED!
 - Bootstrap DatePicker [https://github.com/uxsolutions/bootstrap-datepicker](https://github.com/uxsolutions/bootstrap-datepicker);
 - Font Awesome [http://fontawesome.io/](http://fontawesome.io/);
 - jQuery [https://jquery.com/](https://jquery.com/);
+- SweetAlert2 [https://limonte.github.io/sweetalert2/](https://limonte.github.io/sweetalert2/);
 
 
 ## Like this content? Pay me a coffee!
