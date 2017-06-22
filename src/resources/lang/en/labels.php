@@ -19,4 +19,5 @@ return [
     'save' => "Save",
     'value' => "Value",
     'type' => "Type",
+    'name' => "Name",
 ];

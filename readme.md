@@ -38,12 +38,12 @@ And add the alias, on array "*aliases*":
 Add this line in your routes (in middleware 'auth'):
 
 ```php
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () { // REQUIRED!
     FinancialManager::routes();
 });
 ```
 
-***Note:*** This library uses the user's info to work, so you need add the routes inner of middleware "auth" to work.
+***IMPORTANT NOTE:*** This module uses the user's info to work, so use the middleware 'auth' is required.
 
 ## What "vendors" this module use?
 

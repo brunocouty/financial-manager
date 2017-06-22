@@ -15,8 +15,9 @@ class FinancialManagerServiceProvider extends ServiceProvider
         /* ------------------------------------------------------------------------------------------------------------|
          * LOAD REFERENCES                                                                                             |
          * -----------------------------------------------------------------------------------------------------------*/
-        $this->loadViewsFrom(__DIR__.'/resources/views/financial-manager', 'FM');
-        $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'FM-Language');
+        $this->loadViewsFrom(__DIR__ . '/resources/views/financial-manager', 'FM');
+        $this->loadTranslationsFrom(__DIR__ . '/resources/lang', 'FM-Language');
+        $this->loadMigrationsFrom(__DIR__ . '/migrations');
         /* ------------------------------------------------------------------------------------------------------------|
          * PUBLISHES                                                                                                   |
          * -----------------------------------------------------------------------------------------------------------*/
@@ -24,8 +25,8 @@ class FinancialManagerServiceProvider extends ServiceProvider
             __DIR__ . '/resources/assets/' => public_path("/vendor/financial-manager"),
         ], 'public');
         $this->publishes([
-            __DIR__.'/config/financial-manager.php' => config_path('financial-manager.php'),
-            __DIR__.'/resources/views/' => resource_path('views'),
+            __DIR__ . '/config/financial-manager.php' => config_path('financial-manager.php'),
+            __DIR__ . '/resources/views/' => resource_path('views'),
         ]);
     }
 
@@ -37,7 +38,7 @@ class FinancialManagerServiceProvider extends ServiceProvider
         /* ------------------------------------------------------------------------------------------------------------|
          * REGISTER FACADE                                                                                             |
          * -----------------------------------------------------------------------------------------------------------*/
-        $this->app->bind('brunocouty-financial-manager', function() {
+        $this->app->bind('brunocouty-financial-manager', function () {
             return new FinancialManager;
         });
     }
